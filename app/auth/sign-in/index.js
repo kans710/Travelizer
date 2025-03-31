@@ -1,10 +1,15 @@
 import { View, Text, StatusBar,SafeAreaView, TextInput, StyleSheet,TouchableOpacity} from 'react-native'
-import React, { useEffect } from 'react'
-import { useNavigation } from 'expo-router'
+import React, { useEffect,useState,useRef } from 'react'
+import { useNavigation, useRouter } from 'expo-router'
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 export default function SignIn() {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const router = useRouter();
   const navigation = useNavigation();
+  const passwordRef = React.useRef(null);
   useEffect(()=>{
     navigation.setOptions({
       headerShown: false,
@@ -52,21 +57,46 @@ export default function SignIn() {
         }}>
           Password
         </Text>
+        
+
+    <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#7d7d7d',
+        borderRadius: 15,
+        paddingHorizontal: 10,
+        height: 60,
+        backgroundColor: '#e9ecef',
+        marginTop: 10
+    }}>
         <TextInput
-        secureTextEntry={true}
-        style={styles.input}
-        placeholder='Enter Password' ></TextInput>
+            ref={passwordRef} // Attach ref
+            style={{ flex: 1, fontSize: 20, paddingVertical: 15 }}
+            placeholder="Enter Password"
+            secureTextEntry={!passwordVisible} // Toggle visibility
+        />
+        <TouchableOpacity 
+            onPress={() => {
+                setPasswordVisible(!passwordVisible);
+                passwordRef.current?.focus(); // Keep focus on TextInput
+            }}
+        >
+            <Icon name={passwordVisible ? 'eye' : 'eye-off'} size={24} color="#7d7d7d" />
+        </TouchableOpacity>
+    </View>
+
 
       </View>
       <Text style={{
-        color:'#0096c7',
+        color:'#91cb3e',
         fontFamily:'Poppins',
         fontSize:20,
         marginTop:15,
         marginLeft:10
       }}>Forget your password?</Text>
       <TouchableOpacity style = {styles.button}
-            onPress={()=>router.push('auth/sign-in')}
+            onPress={()=>router.push('auth/sign-up')}
         >
             <Text style={{color:Colors.white,
                 textAlign:'center',
@@ -75,13 +105,13 @@ export default function SignIn() {
                 }}>SignIn</Text>
         </TouchableOpacity>
       <TouchableOpacity style = {[styles.button,{marginTop:'5%',backgroundColor:"#000",alignContent:'flex-start'}]}
-            onPress={()=>router.push('auth/sign-in')}
+            onPress={()=>router.push('auth/sign-up')}
         >
             <Text style={{color:"#fff",
                 textAlign:'center',
                 fontFamily:'Poppins',
                 fontSize:17,
-                }}>Don't have an account yet?                   lets make one !</Text>
+                }}>Don't have an account yet?{'\n'}Let's make one!</Text>
         </TouchableOpacity>
     </SafeAreaView>
   )
@@ -99,7 +129,7 @@ const styles = StyleSheet.create({
   },
   button:{
     padding:15,
-    backgroundColor:"#52b69a",
+    backgroundColor:"#91cb3e",
     borderRadius:99,
     //width:'75%',
     //marginLeft:'13%',
