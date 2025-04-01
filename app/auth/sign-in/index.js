@@ -1,20 +1,55 @@
-import { View, Text, StatusBar,SafeAreaView, TextInput, StyleSheet,TouchableOpacity} from 'react-native'
+import { View, Text, StatusBar,SafeAreaView, TextInput, StyleSheet,TouchableOpacity,ToastAndroid} from 'react-native'
 import React, { useEffect,useState,useRef } from 'react'
 import { useNavigation, useRouter } from 'expo-router'
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import  { signInWithEmailAndPassword,getAuth} from '@firebase/auth'
+import { auth } from '../../../configs/FirebaseConfig'
 
 export default function SignIn() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const router = useRouter();
   const navigation = useNavigation();
   const passwordRef = React.useRef(null);
+
+  const[email,setEmail] = useState();
+  const[password,setPassword] = useState();
   useEffect(()=>{
     navigation.setOptions({
       headerShown: false,
     })
   },[])
+  const OnSignIn=()=>{
+    const auth = getAuth();
+    if(!email&&!password){
+          ToastAndroid.show('Please enter the details first',ToastAndroid.BOTTOM)
+        }
+    if(!email&&password){
+      ToastAndroid.show('Please enter an email',ToastAndroid.BOTTOM)
+    }
+    if(email&&!password){
+      ToastAndroid.show('Please enter a password',ToastAndroid.BOTTOM)
+    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        console.log(user)
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage,errorCode);
+        if (errorCode === 'auth/invalid-email' || errorCode === 'auth/wrong-password' || errorCode === 'auth/user-not-found') {
+          ToastAndroid.show('Invalid credentials', ToastAndroid.BOTTOM);
+        } else {
+          // Handle other potential errors
+          ToastAndroid.show(`Sign-in error: ${errorMessage}`, ToastAndroid.BOTTOM);
+        }
+      });
+    
+  }
   return (
     <SafeAreaView style = {{padding : 25,
       // marginTop:45,
@@ -48,7 +83,10 @@ export default function SignIn() {
         </Text>
         <TextInput
         style={styles.input}
-         placeholder='Enter Email' ></TextInput>
+         placeholder='Enter Email'
+         onChangeText={(value) => setEmail(value)}
+          ></TextInput>
+         
       </View>
       <View style={{marginTop:10}}>
         <Text style={{
@@ -74,6 +112,7 @@ export default function SignIn() {
             ref={passwordRef} // Attach ref
             style={{ flex: 1, fontSize: 20, paddingVertical: 15 }}
             placeholder="Enter Password"
+            onChangeText={(value) => setPassword(value)}
             secureTextEntry={!passwordVisible} // Toggle visibility
         />
         <TouchableOpacity 
@@ -96,7 +135,7 @@ export default function SignIn() {
         marginLeft:10
       }}>Forget your password?</Text>
       <TouchableOpacity style = {styles.button}
-            onPress={()=>router.push('auth/sign-up')}
+            onPress={OnSignIn}
         >
             <Text style={{color:Colors.white,
                 textAlign:'center',
