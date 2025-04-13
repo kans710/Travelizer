@@ -28,7 +28,9 @@ export default function TabLayout(){
         <Tabs.Screen
         name="mytrip"  // Just use a simple name
         options={{
+          headerShown: false,
           tabBarLabel:'My Trip',
+          title: 'My Trip',
           tabBarActiveTintColor:'#91cb3e',
           tabBarIcon: ({ color }) => (
             <FontAwesome6 name="location-dot" size={24} color={color} />
@@ -37,7 +39,9 @@ export default function TabLayout(){
 />
         <Tabs.Screen name = "discover"
         options={{
+          headerShown: false,
           tabBarLabel:'Discover',
+          title: 'Discover',
           tabBarActiveTintColor:'#91cb3e',
           tabBarIcon: ({ color }) => (
             <Entypo name="compass" size={24} color={color} />
@@ -46,7 +50,9 @@ export default function TabLayout(){
         />
         <Tabs.Screen name = "profile"
         options={{
-          tabBarLabel:'Discover',
+          headerShown: false,
+          tabBarLabel:'Profile',
+          title: 'Profile',
           tabBarActiveTintColor:'#91cb3e',
           tabBarIcon: ({ color }) => (
             <FontAwesome5 name="user-alt" size={24} color={color} />
